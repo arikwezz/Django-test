@@ -1,14 +1,105 @@
 <!DOCTYPE html>
-<html lang="ru">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Моя первая страница</title>
+    <title>{{ resume.full_name }} - Resume</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 40px;
+            color: #333;
+        }
+        h1, h2 {
+            border-bottom: 1px solid #ddd;
+            padding-bottom: 5px;
+        }
+        .section {
+            margin-top: 30px;
+        }
+        .job, .edu {
+            margin-bottom: 20px;
+        }
+        .skills, .languages {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        .badge {
+            background: #f0f0f0;
+            padding: 5px 10px;
+            border-radius: 5px;
+        }
+        .contact a {
+            color: #0066cc;
+            text-decoration: none;
+        }
+    </style>
 </head>
 <body>
-    <form>
-        <input type = 'text' >/</input>
-        <button > click me </button>
-    </form>
+
+    <h1>{{ resume.full_name }}</h1>
+    <div class="contact">
+        <p>Email: <a href="mailto:{{ resume.email }}">{{ resume.email }}</a></p>
+        <p>Phone: {{ resume.phone }}</p>
+        {% if resume.location %}<p>Location: {{ resume.location }}</p>{% endif %}
+        {% if resume.linkedin %}<p>LinkedIn: <a href="{{ resume.linkedin }}">{{ resume.linkedin }}</a></p>{% endif %}
+        {% if resume.github %}<p>GitHub: <a href="{{ resume.github }}">{{ resume.github }}</a></p>{% endif %}
+        {% if resume.website %}<p>Website: <a href="{{ resume.website }}">{{ resume.website }}</a></p>{% endif %}
+    </div>
+
+    {% if resume.summary %}
+    <div class="section">
+        <h2>Summary</h2>
+        <p>{{ resume.summary }}</p>
+    </div>
+    {% endif %}
+
+    {% if resume.education.all %}
+    <div class="section">
+        <h2>Education</h2>
+        {% for edu in resume.education.all %}
+        <div class="edu">
+            <strong>{{ edu.degree }}</strong> in {{ edu.field_of_study }}<br>
+            {{ edu.school }} ({{ edu.start_year }}{% if edu.end_year %} - {{ edu.end_year }}{% endif %})
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+
+    {% if resume.experience.all %}
+    <div class="section">
+        <h2>Experience</h2>
+        {% for job in resume.experience.all %}
+        <div class="job">
+            <strong>{{ job.job_title }}</strong> at {{ job.company }}<br>
+            {{ job.start_date|date:"F Y" }}{% if job.end_date %} – {{ job.end_date|date:"F Y" }}{% else %} – Present{% endif %}<br>
+            <p>{{ job.description }}</p>
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+
+    {% if resume.skills.all %}
+    <div class="section">
+        <h2>Skills</h2>
+        <div class="skills">
+            {% for skill in resume.skills.all %}
+                <div class="badge">{{ skill.name }}{% if skill.level %} ({{ skill.level }}){% endif %}</div>
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
+
+    {% if resume.languages.all %}
+    <div class="section">
+        <h2>Languages</h2>
+        <div class="languages">
+            {% for lang in resume.languages.all %}
+                <div class="badge">{{ lang.name }} — {{ lang.proficiency }}</div>
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
+
 </body>
 </html>
